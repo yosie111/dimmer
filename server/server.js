@@ -348,6 +348,71 @@ app.get('/api/products', async (req, res) => {
   }
 });
 
+// ==================== Products Routes ====================
+// שליפת מוצר לפי SKU (חשוב: לפני /:id)
+app.get('/api/products/sku/:sku', async (req, res) => {
+  try {
+    const sku = String(req.params.sku).trim().toUpperCase();
+
+    const product = await Product.findOne({ sku });
+
+    if (!product) {
+      return res.status(404).json({
+        success: false,
+        message: 'מוצר לא נמצא לפי SKU'
+      });
+    }
+
+    res.json({
+      success: true,
+      data: product
+    });
+  } catch (error) {
+    console.error('❌ שגיאה בשליפת מוצר לפי SKU:', error);
+    res.status(500).json({
+      success: false,
+      message: 'אירעה שגיאה בשרת'
+    });
+  }
+});
+
+// מחיקת מוצר לפי SKU (חשוב: לפני /:id)
+app.delete('/api/products/sku/:sku', async (req, res) => {
+  try {
+    const sku = String(req.params.sku).trim().toUpperCase();
+
+    const product = await Product.findOne({ sku });
+
+    if (!product) {
+      return res.status(404).json({
+        success: false,
+        message: 'מוצר לא נמצא לפי SKU'
+      });
+    }
+
+    // מחק את התמונה מ-Cloudinary אם קיימת
+    if (product.imageUrl) {
+      await deleteImage(product.imageUrl);
+    }
+
+    await Product.deleteOne({ sku });
+
+    res.json({
+      success: true,
+      message: 'המוצר נמחק בהצלחה לפי SKU',
+      data: product
+    });
+  } catch (error) {
+    console.error('❌ שגיאה במחיקת מוצר לפי SKU:', error);
+    res.status(500).json({
+      success: false,
+      message: 'אירעה שגיאה בשרת'
+    });
+  }
+});
+
+
+
 // שליפת מוצר בודד
 app.get('/api/products/:id', async (req, res) => {
   try {
@@ -376,7 +441,7 @@ app.get('/api/products/:id', async (req, res) => {
 // הוספת מוצר עם תמונה
 app.post('/api/products', upload.single('image'), async (req, res) => {
   try {
-    const { name, model, positions, color, price, features, inStock } = req.body;
+      const { sku, name, model, positions, color, price, features, inStock } = req.body;
 
     if (!name || !model || !positions || !color || !price) {
       return res.status(400).json({
@@ -500,7 +565,18 @@ app.post('/api/products/bulk', async (req, res) => {
     });
   }
 });
-
+const product = await Product.create({
+  sku, // ← חדש (אם לא נשלח, יווצר אוטומטית ב-pre('validate'))
+  name,
+  model,
+  positions: posNum,
+  color,
+  price: parseFloat(price),
+  features: featuresArray || [],
+  imageUrl: req.file ? req.file.path : '',
+  inStock: inStock === 'true' || inStock === true
+});
+ 
 // עדכון מוצר עם אפשרות לתמונה חדשה
 app.patch('/api/products/:id', upload.single('image'), async (req, res) => {
   try {

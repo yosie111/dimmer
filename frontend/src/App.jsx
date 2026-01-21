@@ -1,9 +1,10 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
-import LandingPage from './components/LandingPage';
+import LandingPage from './pages/LandingPage'
 import ProductManager from './components/ProductManager';
 import LeadsManager from './components/LeadsManager';
 import Dashboard from './components/Dashboard';
+
 
 // Navigation Component
 const Navigation = () => {
