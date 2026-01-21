@@ -1,0 +1,13 @@
+{
+  "name": "dimmer-e2e",
+  "version": "1.0.0",
+  "description": "E2E tests for Dimmer project",
+  "scripts": {
+    "cypress:open": "cypress open",
+    "cypress:run": "cypress run",
+    "test:e2e": "cypress run --headless"
+  },
+  "devDependencies": {
+    "cypress": "^13.6.0"
+  }
+}
