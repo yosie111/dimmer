@@ -5,22 +5,22 @@ const LeadsManager = () => {
   const [leads, setLeads] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-  
+
   // Pagination
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(10);
   const [total, setTotal] = useState(0);
   const [pages, setPages] = useState(0);
-  
+
   // Search & Filter
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
   const [sourceFilter, setSourceFilter] = useState('');
-  
+
   // Sorting
   const [sortBy, setSortBy] = useState('createdAt');
   const [sortOrder, setSortOrder] = useState('desc');
-  
+
   // Edit Modal
   const [editingLead, setEditingLead] = useState(null);
   const [showModal, setShowModal] = useState(false);
@@ -36,6 +36,7 @@ const LeadsManager = () => {
   // שליפת לידים
   const fetchLeads = useCallback(async () => {
     setLoading(true);
+    setError('');
     try {
       const params = new URLSearchParams({
         page: page.toString(),
@@ -43,20 +44,20 @@ const LeadsManager = () => {
         sortBy,
         sortOrder
       });
-      
+
       if (search) params.append('search', search);
       if (statusFilter) params.append('status', statusFilter);
       if (sourceFilter) params.append('source', sourceFilter);
 
       const response = await fetch(`/api/leads?${params}`);
       const data = await response.json();
-      
+
       if (data.success) {
         setLeads(data.data);
         setTotal(data.total);
         setPages(data.pages);
       } else {
-        setError(data.message);
+        setError(data.message || 'שגיאה בטעינת הלידים');
       }
     } catch (err) {
       setError('שגיאה בטעינת הלידים');
@@ -85,9 +86,11 @@ const LeadsManager = () => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ status: newStatus })
       });
-      
+
       if (response.ok) {
         fetchLeads();
+      } else {
+        setError('שגיאה בעדכון הסטטוס');
       }
     } catch (err) {
       setError('שגיאה בעדכון הסטטוס');
@@ -97,14 +100,16 @@ const LeadsManager = () => {
   // מחיקת ליד
   const deleteLead = async (id) => {
     if (!window.confirm('האם אתה בטוח שברצונך למחוק את הליד?')) return;
-    
+
     try {
       const response = await fetch(`/api/leads/${id}`, {
         method: 'DELETE'
       });
-      
+
       if (response.ok) {
         fetchLeads();
+      } else {
+        setError('שגיאה במחיקת הליד');
       }
     } catch (err) {
       setError('שגיאה במחיקת הליד');
@@ -120,11 +125,13 @@ const LeadsManager = () => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(editingLead)
       });
-      
+
       if (response.ok) {
         setShowModal(false);
         setEditingLead(null);
         fetchLeads();
+      } else {
+        setError('שגיאה בשמירת הליד');
       }
     } catch (err) {
       setError('שגיאה בשמירת הליד');
@@ -164,9 +171,9 @@ const LeadsManager = () => {
   return (
     <div style={styles.container}>
       <h1 style={styles.title}>ניהול לידים</h1>
-      
+
       {error && <div style={styles.error}>{error}</div>}
-      
+
       {/* Filters & Search */}
       <div style={styles.toolbar}>
         <div style={styles.searchBox}>
@@ -178,7 +185,7 @@ const LeadsManager = () => {
             style={styles.searchInput}
           />
         </div>
-        
+
         <div style={styles.filters}>
           <select
             value={statusFilter}
@@ -190,7 +197,7 @@ const LeadsManager = () => {
               <option key={s.value} value={s.value}>{s.label}</option>
             ))}
           </select>
-          
+
           <select
             value={sourceFilter}
             onChange={(e) => { setSourceFilter(e.target.value); setPage(1); }}
@@ -203,7 +210,7 @@ const LeadsManager = () => {
             <option value="referral">המלצה</option>
             <option value="other">אחר</option>
           </select>
-          
+
           <select
             value={limit}
             onChange={(e) => { setLimit(parseInt(e.target.value)); setPage(1); }}
@@ -237,6 +244,7 @@ const LeadsManager = () => {
                   אימייל {sortBy === 'email' && (sortOrder === 'asc' ? '↑' : '↓')}
                 </th>
                 <th style={styles.th}>טלפון</th>
+                <th style={styles.th}>עניין במוצר</th>
                 <th style={styles.th}>מקור</th>
                 <th style={styles.th}>סטטוס</th>
                 <th style={styles.th} onClick={() => handleSort('createdAt')}>
@@ -245,12 +253,14 @@ const LeadsManager = () => {
                 <th style={styles.th}>פעולות</th>
               </tr>
             </thead>
+
             <tbody>
               {leads.map(lead => (
                 <tr key={lead._id} style={styles.tr}>
                   <td style={styles.td}>{lead.name}</td>
                   <td style={styles.td}>{lead.email}</td>
                   <td style={styles.td}>{lead.phone}</td>
+                  <td style={styles.td}>{lead.productInterest || '—'}</td>
                   <td style={styles.td}>{lead.source}</td>
                   <td style={styles.td}>
                     <select
@@ -270,7 +280,7 @@ const LeadsManager = () => {
                   <td style={styles.td}>{formatDate(lead.createdAt)}</td>
                   <td style={styles.td}>
                     <button
-                      onClick={() => { setEditingLead({...lead}); setShowModal(true); }}
+                      onClick={() => { setEditingLead({ ...lead }); setShowModal(true); }}
                       style={styles.editBtn}
                     >
                       ערוך
@@ -306,7 +316,7 @@ const LeadsManager = () => {
           >
             הקודם
           </button>
-          
+
           {[...Array(Math.min(5, pages))].map((_, i) => {
             const pageNum = Math.max(1, Math.min(page - 2, pages - 4)) + i;
             if (pageNum > pages) return null;
@@ -324,7 +334,7 @@ const LeadsManager = () => {
               </button>
             );
           })}
-          
+
           <button
             onClick={() => setPage(p => Math.min(pages, p + 1))}
             disabled={page === pages}
@@ -353,48 +363,48 @@ const LeadsManager = () => {
                 <input
                   type="text"
                   value={editingLead.name}
-                  onChange={(e) => setEditingLead({...editingLead, name: e.target.value})}
+                  onChange={(e) => setEditingLead({ ...editingLead, name: e.target.value })}
                   style={styles.input}
                   required
                 />
               </div>
-              
+
               <div style={styles.formGroup}>
                 <label style={styles.label}>טלפון:</label>
                 <input
                   type="text"
                   value={editingLead.phone}
-                  onChange={(e) => setEditingLead({...editingLead, phone: e.target.value})}
+                  onChange={(e) => setEditingLead({ ...editingLead, phone: e.target.value })}
                   style={styles.input}
                   required
                 />
               </div>
-              
+
               <div style={styles.formGroup}>
                 <label style={styles.label}>אימייל:</label>
                 <input
                   type="email"
                   value={editingLead.email}
-                  onChange={(e) => setEditingLead({...editingLead, email: e.target.value})}
+                  onChange={(e) => setEditingLead({ ...editingLead, email: e.target.value })}
                   style={styles.input}
                   required
                 />
               </div>
-              
+
               <div style={styles.formGroup}>
                 <label style={styles.label}>הודעה:</label>
                 <textarea
                   value={editingLead.message || ''}
-                  onChange={(e) => setEditingLead({...editingLead, message: e.target.value})}
+                  onChange={(e) => setEditingLead({ ...editingLead, message: e.target.value })}
                   style={styles.textarea}
                 />
               </div>
-              
+
               <div style={styles.formGroup}>
                 <label style={styles.label}>מקור:</label>
                 <select
                   value={editingLead.source}
-                  onChange={(e) => setEditingLead({...editingLead, source: e.target.value})}
+                  onChange={(e) => setEditingLead({ ...editingLead, source: e.target.value })}
                   style={styles.input}
                 >
                   <option value="website">אתר</option>
@@ -404,22 +414,22 @@ const LeadsManager = () => {
                   <option value="other">אחר</option>
                 </select>
               </div>
-              
+
               <div style={styles.formGroup}>
                 <label style={styles.label}>עניין במוצר:</label>
                 <input
                   type="text"
                   value={editingLead.productInterest || ''}
-                  onChange={(e) => setEditingLead({...editingLead, productInterest: e.target.value})}
+                  onChange={(e) => setEditingLead({ ...editingLead, productInterest: e.target.value })}
                   style={styles.input}
                 />
               </div>
-              
+
               <div style={styles.formGroup}>
                 <label style={styles.label}>סטטוס:</label>
                 <select
                   value={editingLead.status}
-                  onChange={(e) => setEditingLead({...editingLead, status: e.target.value})}
+                  onChange={(e) => setEditingLead({ ...editingLead, status: e.target.value })}
                   style={styles.input}
                 >
                   {STATUSES.map(s => (
@@ -427,7 +437,7 @@ const LeadsManager = () => {
                   ))}
                 </select>
               </div>
-              
+
               <div style={styles.modalButtons}>
                 <button type="submit" style={styles.saveBtn}>שמור</button>
                 <button
