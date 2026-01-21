@@ -71,24 +71,139 @@ app.post('/api/leads', async (req, res) => {
   }
 });
 
-// קבלת כל הלידים
+// קבלת כל הלידים - עם Pagination, Search ו-Sorting
 app.get('/api/leads', async (req, res) => {
   try {
-    const { status, source } = req.query;
+    const { 
+      status, 
+      source,
+      search,
+      sortBy = 'createdAt',
+      sortOrder = 'desc',
+      page = 1,
+      limit = 10
+    } = req.query;
     
+    // בניית query
     let query = {};
     if (status) query.status = status;
     if (source) query.source = source;
+    
+    // חיפוש בשם, טלפון או אימייל
+    if (search) {
+      query.$or = [
+        { name: { $regex: search, $options: 'i' } },
+        { phone: { $regex: search, $options: 'i' } },
+        { email: { $regex: search, $options: 'i' } }
+      ];
+    }
 
-    const leads = await Lead.find(query).sort({ createdAt: -1 });
+    // מיון
+    const sortOptions = {};
+    sortOptions[sortBy] = sortOrder === 'asc' ? 1 : -1;
+
+    // Pagination
+    const pageNum = parseInt(page);
+    const limitNum = parseInt(limit);
+    const skip = (pageNum - 1) * limitNum;
+
+    // ביצוע השאילתות
+    const [leads, total] = await Promise.all([
+      Lead.find(query)
+        .sort(sortOptions)
+        .skip(skip)
+        .limit(limitNum),
+      Lead.countDocuments(query)
+    ]);
+
+    const pages = Math.ceil(total / limitNum);
 
     res.json({
       success: true,
       count: leads.length,
+      total,
+      page: pageNum,
+      pages,
+      limit: limitNum,
       data: leads
     });
   } catch (error) {
     console.error('❌ שגיאה בשליפת לידים:', error);
+    res.status(500).json({
+      success: false,
+      message: 'אירעה שגיאה בשרת'
+    });
+  }
+});
+
+// סטטיסטיקות לידים (Dashboard) - חייב להיות לפני :id
+app.get('/api/leads/stats', async (req, res) => {
+  try {
+    // סה"כ לידים
+    const total = await Lead.countDocuments();
+    
+    // לידים לפי סטטוס
+    const byStatus = await Lead.aggregate([
+      { $group: { _id: '$status', count: { $sum: 1 } } }
+    ]);
+    
+    // לידים לפי מקור
+    const bySource = await Lead.aggregate([
+      { $group: { _id: '$source', count: { $sum: 1 } } }
+    ]);
+    
+    // לידים חדשים היום
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const newToday = await Lead.countDocuments({
+      createdAt: { $gte: today }
+    });
+    
+    // לידים השבוע
+    const weekAgo = new Date();
+    weekAgo.setDate(weekAgo.getDate() - 7);
+    const newThisWeek = await Lead.countDocuments({
+      createdAt: { $gte: weekAgo }
+    });
+    
+    // לידים החודש
+    const monthAgo = new Date();
+    monthAgo.setMonth(monthAgo.getMonth() - 1);
+    const newThisMonth = await Lead.countDocuments({
+      createdAt: { $gte: monthAgo }
+    });
+    
+    // אחוז המרה (converted מתוך סה"כ)
+    const converted = byStatus.find(s => s._id === 'converted')?.count || 0;
+    const conversionRate = total > 0 ? ((converted / total) * 100).toFixed(1) : 0;
+    
+    // 5 לידים אחרונים
+    const recentLeads = await Lead.find()
+      .sort({ createdAt: -1 })
+      .limit(5)
+      .select('name email status createdAt');
+
+    res.json({
+      success: true,
+      data: {
+        total,
+        newToday,
+        newThisWeek,
+        newThisMonth,
+        conversionRate: parseFloat(conversionRate),
+        byStatus: byStatus.reduce((acc, item) => {
+          acc[item._id] = item.count;
+          return acc;
+        }, {}),
+        bySource: bySource.reduce((acc, item) => {
+          acc[item._id || 'unknown'] = item.count;
+          return acc;
+        }, {}),
+        recentLeads
+      }
+    });
+  } catch (error) {
+    console.error('❌ שגיאה בשליפת סטטיסטיקות:', error);
     res.status(500).json({
       success: false,
       message: 'אירעה שגיאה בשרת'
