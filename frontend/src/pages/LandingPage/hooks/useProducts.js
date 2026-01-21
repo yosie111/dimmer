@@ -7,6 +7,11 @@ export function useProducts({ limit = 4 } = {}) {
   const fetchProducts = useCallback(async () => {
     try {
       const response = await fetch(`/api/products?limit=${limit}`);
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      
       const data = await response.json();
 
       if (data?.success) {

@@ -5,7 +5,12 @@ export function FloatingCta({ showPopup, onOpen }) {
   if (showPopup) return null;
 
   return (
-    <button style={styles.floatingCta} onClick={onOpen}>
+    <button
+      className="floating-cta"
+      style={styles.floatingCta}
+      onClick={onOpen}
+      type="button"
+    >
       💬 צור קשר
     </button>
   );

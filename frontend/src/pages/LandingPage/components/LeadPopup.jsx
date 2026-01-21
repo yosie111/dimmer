@@ -15,7 +15,7 @@ export function LeadPopup({
 
   return (
     <div style={styles.popupOverlay} onClick={(e) => e.target === e.currentTarget && onClose()}>
-      <div style={styles.popupContainer}>
+      <div className="popup-container" style={styles.popupContainer}>
         <button style={styles.closeButton} onClick={onClose}>
           ✕
         </button>
@@ -34,6 +34,7 @@ export function LeadPopup({
                 <span>💡</span>
                 <span>
                   {selectedProduct.name} - ₪{selectedProduct.price}
+                  {selectedProduct.sku && <small style={{ opacity: 0.7 }}> ({selectedProduct.sku})</small>}
                 </span>
               </div>
             )}

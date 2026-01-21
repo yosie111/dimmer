@@ -70,6 +70,11 @@ export default function LandingPage() {
           onGetQuote={openPopupWithProduct}
         />
 
+        {/* Footer */}
+        <footer style={styles.footer}>
+          <p style={styles.footerText}>© {new Date().getFullYear()} Dimmer. כל הזכויות שמורות.</p>
+        </footer>
+
         {/* Lead Form Popup */}
         <LeadPopup
           show={showPopup}

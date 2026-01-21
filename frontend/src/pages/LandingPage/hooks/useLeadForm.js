@@ -29,7 +29,7 @@ export function useLeadForm() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           ...formData,
-          productInterest: selectedProduct?.name || formData.productInterest,
+          productInterest: selectedProduct?.sku || selectedProduct?.name || formData.productInterest,
         }),
       });
 

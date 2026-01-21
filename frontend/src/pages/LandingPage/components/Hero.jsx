@@ -4,6 +4,7 @@ import { styles } from "../styles";
 export function Hero({ isVisible }) {
   return (
     <section
+      className="hero-section"
       style={{
         ...styles.hero,
         opacity: isVisible ? 1 : 0,

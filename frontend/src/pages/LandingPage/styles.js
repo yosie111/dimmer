@@ -1,10 +1,69 @@
 export const keyframesCss = `
+  @import url('https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800&display=swap');
+  
   @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
   @keyframes slideUp { from { transform: translateY(50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
   @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
   @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
   @keyframes glow { 0%, 100% { box-shadow: 0 0 20px rgba(99, 102, 241, 0.3); } 50% { box-shadow: 0 0 40px rgba(99, 102, 241, 0.6); } }
-  @import url('https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800&display=swap');
+
+  @media (max-width: 768px) {
+    .thumbnails-grid {
+      grid-template-columns: repeat(2, 1fr) !important;
+      gap: 10px !important;
+    }
+    
+    .thumbnail-card {
+      padding: 8px !important;
+    }
+    
+    .thumbnail-image-container {
+      aspect-ratio: 1 !important;
+      margin-bottom: 6px !important;
+    }
+    
+    .thumbnail-name {
+      font-size: 11px !important;
+    }
+    
+    .thumbnail-price {
+      font-size: 12px !important;
+    }
+    
+    .main-image-overlay {
+      padding: 15px !important;
+    }
+    
+    .main-product-name {
+      font-size: 20px !important;
+    }
+    
+    .floating-cta {
+      bottom: 20px !important;
+      left: 20px !important;
+      padding: 12px 20px !important;
+      font-size: 14px !important;
+    }
+    
+    .hero-section {
+      padding: 30px 15px 20px !important;
+    }
+    
+    .popup-container {
+      padding: 25px !important;
+      margin: 10px !important;
+    }
+    
+    .meta-badge, .price-badge {
+      padding: 4px 10px !important;
+      font-size: 12px !important;
+    }
+    
+    .cta-button-main {
+      padding: 10px 20px !important;
+      font-size: 14px !important;
+    }
+  }
 `;
 
 export const styles = {
@@ -15,6 +74,7 @@ export const styles = {
     direction: "rtl",
     position: "relative",
     overflow: "hidden",
+    gap: '40px' 
   },
   bgGradient: {
     position: "fixed",
@@ -314,4 +374,19 @@ export const styles = {
   },
   successTitle: { fontSize: "24px", fontWeight: "700", color: "#fff", marginBottom: "10px" },
   successText: { fontSize: "15px", color: "rgba(255, 255, 255, 0.6)" },
+
+  // Footer
+  footer: {
+    textAlign: "center",
+    padding: "40px 20px",
+    borderTop: "1px solid rgba(255, 255, 255, 0.1)",
+    marginTop: "60px",
+    position: "relative",
+    zIndex: 10,
+  },
+  footerText: {
+    color: "rgba(255, 255, 255, 0.4)",
+    fontSize: "14px",
+    margin: 0,
+  },
 };

@@ -44,7 +44,9 @@ const navStyles = {
     color: 'white',
     fontSize: '24px',
     fontWeight: 'bold',
-    textDecoration: 'none'
+    textDecoration: 'none',
+    padding:'5%'
+
   },
   links: {
     display: 'flex',
