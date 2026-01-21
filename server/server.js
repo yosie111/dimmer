@@ -565,18 +565,7 @@ app.post('/api/products/bulk', async (req, res) => {
     });
   }
 });
-const product = await Product.create({
-  sku, // ← חדש (אם לא נשלח, יווצר אוטומטית ב-pre('validate'))
-  name,
-  model,
-  positions: posNum,
-  color,
-  price: parseFloat(price),
-  features: featuresArray || [],
-  imageUrl: req.file ? req.file.path : '',
-  inStock: inStock === 'true' || inStock === true
-});
- 
+
 // עדכון מוצר עם אפשרות לתמונה חדשה
 app.patch('/api/products/:id', upload.single('image'), async (req, res) => {
   try {

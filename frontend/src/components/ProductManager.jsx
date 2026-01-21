@@ -277,6 +277,16 @@ const ProductManager = () => {
       marginBottom: '8px',
       color: '#1a1a2e'
     },
+    productSku: {
+      fontSize: '12px',
+      fontFamily: 'monospace',
+      color: '#6366f1',
+      backgroundColor: 'rgba(99, 102, 241, 0.1)',
+      padding: '2px 8px',
+      borderRadius: '4px',
+      marginBottom: '8px',
+      display: 'inline-block'
+    },
     productDetails: {
       fontSize: '14px',
       color: '#666',
@@ -376,6 +386,27 @@ const ProductManager = () => {
     },
     modalBody: {
       padding: '20px'
+    },
+    skuDisplay: {
+      backgroundColor: 'rgba(99, 102, 241, 0.1)',
+      border: '1px solid rgba(99, 102, 241, 0.3)',
+      borderRadius: '8px',
+      padding: '12px',
+      marginBottom: '20px',
+      display: 'flex',
+      alignItems: 'center',
+      gap: '10px'
+    },
+    skuLabel: {
+      fontSize: '14px',
+      fontWeight: '600',
+      color: '#666'
+    },
+    skuValue: {
+      fontSize: '16px',
+      fontFamily: 'monospace',
+      fontWeight: '700',
+      color: '#6366f1'
     },
     formGroup: {
       marginBottom: '15px'
@@ -536,6 +567,9 @@ const ProductManager = () => {
               )}
               <div style={styles.productInfo}>
                 <h3 style={styles.productName}>{product.name}</h3>
+                {product.sku && (
+                  <p style={styles.productSku}>{product.sku}</p>
+                )}
                 <p style={styles.productDetails}>דגם: {modelLabels[product.model]}</p>
                 <p style={styles.productDetails}>צבע: {colorLabels[product.color]}</p>
                 <p style={styles.productDetails}>מעגלים: {product.positions}</p>
@@ -571,6 +605,12 @@ const ProductManager = () => {
               <button style={styles.closeButton} onClick={closeModal}>×</button>
             </div>
             <div style={styles.modalBody}>
+              {editingProduct && editingProduct.sku && (
+                <div style={styles.skuDisplay}>
+                  <span style={styles.skuLabel}>מק"ט:</span>
+                  <span style={styles.skuValue}>{editingProduct.sku}</span>
+                </div>
+              )}
               <form onSubmit={handleSubmit}>
                 <div style={styles.formGroup}>
                   <label style={styles.label}>שם המוצר *</label>
