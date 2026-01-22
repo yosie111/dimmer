@@ -71,13 +71,15 @@ app.post('/api/leads', async (req, res) => {
   }
 });
 
-// קבלת כל הלידים - עם Pagination, Search ו-Sorting
+// קבלת כל הלידים - עם Pagination, Search, Sorting ו-Date Filter
 app.get('/api/leads', async (req, res) => {
   try {
     const { 
       status, 
       source,
       search,
+      dateFrom, // <--- הוספנו כאן
+      dateTo,   // <--- הוספנו כאן
       sortBy = 'createdAt',
       sortOrder = 'desc',
       page = 1,
@@ -88,6 +90,21 @@ app.get('/api/leads', async (req, res) => {
     let query = {};
     if (status) query.status = status;
     if (source) query.source = source;
+
+    // --- Date Filter (הקוד שביקשת להוסיף) ---
+    if (dateFrom || dateTo) {
+      query.createdAt = {};
+      if (dateFrom) {
+        query.createdAt.$gte = new Date(dateFrom);
+      }
+      if (dateTo) {
+        // Add one day to include the entire end date
+        const endDate = new Date(dateTo);
+        endDate.setDate(endDate.getDate() + 1);
+        query.createdAt.$lte = endDate;
+      }
+    }
+    // ----------------------------------------
     
     // חיפוש בשם, טלפון או אימייל
     if (search) {
@@ -210,6 +227,7 @@ app.get('/api/leads/stats', async (req, res) => {
     });
   }
 });
+
 
 // קבלת ליד בודד לפי ID
 app.get('/api/leads/:id', async (req, res) => {
@@ -782,12 +800,12 @@ app.listen(PORT, () => {
 ╔════════════════════════════════════════════════════════════╗
 ║                                                            ║
 ║   🚀 השרת פועל על פורט ${PORT}                              ║
-║   📦 MongoDB מחובר                                         ║
+║   📦 MongoDB מחובר                                        ║
 ║   ☁️  Cloudinary מוגדר                                      ║
 ║                                                            ║
 ║   Leads Endpoints:                                         ║
 ║   POST   /api/leads              - הוספת ליד               ║
-║   GET    /api/leads              - כל הלידים               ║
+║   GET    /api/leads              - כל הלידים (נוסף: Date)  ║
 ║   GET    /api/leads/:id          - ליד בודד                ║
 ║   PATCH  /api/leads/:id          - עדכון ליד               ║
 ║   DELETE /api/leads/:id          - מחיקת ליד               ║

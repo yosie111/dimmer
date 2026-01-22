@@ -16,6 +16,8 @@ const LeadsManager = () => {
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
   const [sourceFilter, setSourceFilter] = useState('');
+  const [dateFrom, setDateFrom] = useState('');
+  const [dateTo, setDateTo] = useState('');
 
   // Sorting
   const [sortBy, setSortBy] = useState('createdAt');
@@ -48,6 +50,8 @@ const LeadsManager = () => {
       if (search) params.append('search', search);
       if (statusFilter) params.append('status', statusFilter);
       if (sourceFilter) params.append('source', sourceFilter);
+      if (dateFrom) params.append('dateFrom', dateFrom);
+      if (dateTo) params.append('dateTo', dateTo);
 
       const response = await fetch(`/api/leads?${params}`);
       const data = await response.json();
@@ -64,7 +68,7 @@ const LeadsManager = () => {
     } finally {
       setLoading(false);
     }
-  }, [page, limit, search, statusFilter, sourceFilter, sortBy, sortOrder]);
+  }, [page, limit, search, statusFilter, sourceFilter, dateFrom, dateTo, sortBy, sortOrder]);
 
   useEffect(() => {
     fetchLeads();
@@ -168,6 +172,13 @@ const LeadsManager = () => {
     return STATUSES.find(s => s.value === status)?.label || status;
   };
 
+  // ניקוי פילטר תאריכים
+  const clearDateFilter = () => {
+    setDateFrom('');
+    setDateTo('');
+    setPage(1);
+  };
+
   return (
     <div style={styles.container}>
       <h1 style={styles.title}>ניהול לידים</h1>
@@ -221,6 +232,36 @@ const LeadsManager = () => {
             <option value="25">25 לעמוד</option>
             <option value="50">50 לעמוד</option>
           </select>
+        </div>
+      </div>
+
+      {/* Date Filter */}
+      <div style={styles.dateFilter}>
+        <span style={styles.dateLabel}>סינון לפי תאריך:</span>
+        <div style={styles.dateInputs}>
+          <div style={styles.dateInputGroup}>
+            <label style={styles.dateInputLabel}>מתאריך:</label>
+            <input
+              type="date"
+              value={dateFrom}
+              onChange={(e) => { setDateFrom(e.target.value); setPage(1); }}
+              style={styles.dateInput}
+            />
+          </div>
+          <div style={styles.dateInputGroup}>
+            <label style={styles.dateInputLabel}>עד תאריך:</label>
+            <input
+              type="date"
+              value={dateTo}
+              onChange={(e) => { setDateTo(e.target.value); setPage(1); }}
+              style={styles.dateInput}
+            />
+          </div>
+          {(dateFrom || dateTo) && (
+            <button onClick={clearDateFilter} style={styles.clearDateBtn}>
+              נקה תאריכים
+            </button>
+          )}
         </div>
       </div>
 
@@ -318,8 +359,17 @@ const LeadsManager = () => {
           </button>
 
           {[...Array(Math.min(5, pages))].map((_, i) => {
-            const pageNum = Math.max(1, Math.min(page - 2, pages - 4)) + i;
-            if (pageNum > pages) return null;
+            let pageNum;
+            if (pages <= 5) {
+              pageNum = i + 1;
+            } else if (page <= 3) {
+              pageNum = i + 1;
+            } else if (page >= pages - 2) {
+              pageNum = pages - 4 + i;
+            } else {
+              pageNum = page - 2 + i;
+            }
+
             return (
               <button
                 key={pageNum}
@@ -354,7 +404,7 @@ const LeadsManager = () => {
 
       {/* Edit Modal */}
       {showModal && editingLead && (
-        <div style={styles.modalOverlay}>
+        <div style={styles.modalOverlay} onClick={(e) => e.target === e.currentTarget && setShowModal(false)}>
           <div style={styles.modal}>
             <h2 style={styles.modalTitle}>עריכת ליד</h2>
             <form onSubmit={saveLead}>
@@ -372,11 +422,10 @@ const LeadsManager = () => {
               <div style={styles.formGroup}>
                 <label style={styles.label}>טלפון:</label>
                 <input
-                  type="text"
+                  type="tel"
                   value={editingLead.phone}
                   onChange={(e) => setEditingLead({ ...editingLead, phone: e.target.value })}
                   style={styles.input}
-                  required
                 />
               </div>
 
@@ -482,7 +531,7 @@ const styles = {
     display: 'flex',
     flexWrap: 'wrap',
     gap: '15px',
-    marginBottom: '20px',
+    marginBottom: '15px',
     alignItems: 'center'
   },
   searchBox: {
@@ -508,6 +557,50 @@ const styles = {
     fontSize: '14px',
     backgroundColor: 'white',
     cursor: 'pointer'
+  },
+  dateFilter: {
+    display: 'flex',
+    flexWrap: 'wrap',
+    alignItems: 'center',
+    gap: '15px',
+    padding: '15px',
+    backgroundColor: '#f9fafb',
+    borderRadius: '8px',
+    marginBottom: '15px'
+  },
+  dateLabel: {
+    fontWeight: '600',
+    color: '#374151'
+  },
+  dateInputs: {
+    display: 'flex',
+    flexWrap: 'wrap',
+    alignItems: 'center',
+    gap: '15px'
+  },
+  dateInputGroup: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '8px'
+  },
+  dateInputLabel: {
+    fontSize: '14px',
+    color: '#6b7280'
+  },
+  dateInput: {
+    padding: '8px 12px',
+    borderRadius: '8px',
+    border: '1px solid #d1d5db',
+    fontSize: '14px'
+  },
+  clearDateBtn: {
+    padding: '8px 16px',
+    backgroundColor: '#6b7280',
+    color: 'white',
+    border: 'none',
+    borderRadius: '8px',
+    cursor: 'pointer',
+    fontSize: '14px'
   },
   summary: {
     color: '#6b7280',
