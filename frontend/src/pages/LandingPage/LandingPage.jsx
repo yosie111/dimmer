@@ -38,7 +38,6 @@ export default function LandingPage() {
 
   // --- התיקון נמצא כאן ---
   const handleFormSubmit = async () => {
-    // 1. מחקנו את ה-e ואת e.preventDefault() מכאן כי ה-Popup כבר עשה את זה
     const ok = await submitLead({ selectedProduct });
 
     if (ok) {
