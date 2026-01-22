@@ -144,8 +144,3 @@ npm start
 - Environment variables are not committed
 - Passwords are hashed (bcrypt)
 - Secrets stored securely
-
----
-
-## 📄 License
-ISC
