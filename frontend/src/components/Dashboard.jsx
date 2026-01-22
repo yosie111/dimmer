@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+const API_URL = import.meta.env.VITE_API_URL || '';
 
 const Dashboard = () => {
   const [stats, setStats] = useState(null);
@@ -11,7 +12,7 @@ const Dashboard = () => {
 
   const fetchStats = async () => {
     try {
-      const response = await fetch('/api/leads/stats');
+      const response = await fetch(`${API_URL}/api/leads/stats`);
       const data = await response.json();
       
       if (data.success) {

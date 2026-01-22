@@ -1,4 +1,5 @@
 import { useState } from "react";
+const API_URL = import.meta.env.VITE_API_URL || '';
 
 const initialForm = {
   name: "",
@@ -74,7 +75,7 @@ export function useLeadForm() {
 
     setIsSubmitting(true);
     try {
-      const response = await fetch("/api/leads", {
+        const response = await fetch(`${API_URL}/api/leads`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

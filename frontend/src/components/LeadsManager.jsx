@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
+const API_URL = import.meta.env.VITE_API_URL || '';
 
 const LeadsManager = () => {
   // State
@@ -53,7 +54,7 @@ const LeadsManager = () => {
       if (dateFrom) params.append('dateFrom', dateFrom);
       if (dateTo) params.append('dateTo', dateTo);
 
-      const response = await fetch(`/api/leads?${params}`);
+      const response = await fetch(`${API_URL}/api/leads?${params}`);
       const data = await response.json();
 
       if (data.success) {
@@ -85,7 +86,7 @@ const LeadsManager = () => {
   // עדכון סטטוס
   const updateLeadStatus = async (id, newStatus) => {
     try {
-      const response = await fetch(`/api/leads/${id}`, {
+        const response = await fetch(`${API_URL}/api/leads/${id}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ status: newStatus })
@@ -106,7 +107,8 @@ const LeadsManager = () => {
     if (!window.confirm('האם אתה בטוח שברצונך למחוק את הליד?')) return;
 
     try {
-      const response = await fetch(`/api/leads/${id}`, {
+      const response = await fetch(`${API_URL}/api/leads/${id}`, {
+
         method: 'DELETE'
       });
 
@@ -124,7 +126,7 @@ const LeadsManager = () => {
   const saveLead = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch(`/api/leads/${editingLead._id}`, {
+        const response = await fetch(`${API_URL}/api/leads/${editingLead._id}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(editingLead)

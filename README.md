@@ -19,28 +19,37 @@ A full-stack MERN application for managing dimmer switch products and capturing 
 - **Testing:** Jest, React Testing Library
 
 ## Project Structure
-```
-dimmer/
-├── frontend/          # React application
-│   ├── src/
-│   │   ├── components/
-│   │   │   ├── LandingPage.jsx
+
+dimmer
+├── frontend
+│   ├── public
+│   ├── src
+│   │   ├── components
+│   │   │   ├── Dashboard.jsx
+│   │   │   ├── LeadsManager.jsx
 │   │   │   └── ProductManager.jsx
+│   │   ├── pages
+│   │   │   └── LandingPage
+│   │   │       ├── components
+│   │   │       ├── hooks
+│   │   │       ├── LandingPage.jsx
+│   │   │       └── index.js
 │   │   ├── App.jsx
-│   │   └── index.js
+│   │   └── main.jsx
+│   ├── package.json
+│   └── vite.config.js
+├── server
+│   ├── config
+│   │   ├── cloudinary.js
+│   │   └── db.js
+│   ├── models
+│   │   ├── Lead.js
+│   │   └── Product.js
+│   ├── tests
+│   ├── server.js
 │   └── package.json
-│
-└── server/            # Express API
-    ├── config/
-    │   ├── db.js
-    │   └── cloudinary.js
-    ├── models/
-    │   ├── Lead.js
-    │   └── Product.js
-    ├── server.js
-    ├── seed.js
-    └── package.json
-```
+└── README.md
+
 
 ## Installation
 

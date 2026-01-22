@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
+const API_URL = import.meta.env.VITE_API_URL || '';
 
 export function useProducts({ limit = 4 } = {}) {
   const [products, setProducts] = useState([]);
@@ -6,7 +7,7 @@ export function useProducts({ limit = 4 } = {}) {
 
   const fetchProducts = useCallback(async () => {
     try {
-      const response = await fetch(`/api/products?limit=${limit}`);
+      const response = await fetch(`${API_URL}/api/products?limit=${limit}`);
       
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);

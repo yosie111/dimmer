@@ -1,5 +1,9 @@
 import React, { useState, useEffect } from 'react';
 
+
+const API_URL = import.meta.env.VITE_API_URL || '';
+
+
 const ProductManager = () => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -29,7 +33,7 @@ const ProductManager = () => {
       if (filter.color) params.append('color', filter.color);
       if (filter.inStock) params.append('inStock', filter.inStock);
 
-      const response = await fetch(`/api/products?${params}`);
+      const response = await fetch(`${API_URL}/api/products?${params}`);
       const data = await response.json();
       if (data.success) {
         setProducts(data.data);
@@ -118,8 +122,8 @@ const ProductManager = () => {
       }
 
       const url = editingProduct 
-        ? `/api/products/${editingProduct._id}`
-        : '/api/products';
+        ? `${API_URL}/api/products/${editingProduct._id}`
+        : `${API_URL}/api/products`;
       
       const method = editingProduct ? 'PATCH' : 'POST';
 
@@ -150,7 +154,7 @@ const ProductManager = () => {
     if (!window.confirm('האם למחוק את המוצר?')) return;
 
     try {
-      const response = await fetch(`/api/products/${productId}`, {
+      const response = await fetch(`${API_URL}/api/products/${productId}`, {
         method: 'DELETE'
       });
       const data = await response.json();
@@ -170,7 +174,7 @@ const ProductManager = () => {
     if (!window.confirm('האם למחוק את התמונה?')) return;
 
     try {
-      const response = await fetch(`/api/products/${productId}/image`, {
+      const response = await fetch(`${API_URL}/api/products/${productId}/image`, {
         method: 'DELETE'
       });
       const data = await response.json();
@@ -342,7 +346,6 @@ const ProductManager = () => {
       fontSize: '14px',
       fontWeight: '600'
     },
-    // Modal styles
     modalOverlay: {
       position: 'fixed',
       top: 0,
