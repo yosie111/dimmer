@@ -8,8 +8,9 @@ export function LeadPopup({
   isSubmitted,
   isSubmitting,
   formData,
+  errors, // <--- 1. הוספנו את זה כדי שנוכל להציג שגיאות
   onChange,
-  onSubmit,
+  onSubmit, // <--- הפונקציה מגיעה בשם הזה מהאבא
 }) {
   if (!show) return null;
 
@@ -39,34 +40,60 @@ export function LeadPopup({
               </div>
             )}
 
-            <form onSubmit={onSubmit} style={styles.popupForm}>
-              <input
-                type="text"
-                name="name"
-                placeholder="שם מלא *"
-                value={formData.name}
-                onChange={onChange}
-                style={styles.popupInput}
-                required
-              />
-              <input
-                type="tel"
-                name="phone"
-                placeholder="טלפון *"
-                value={formData.phone}
-                onChange={onChange}
-                style={styles.popupInput}
-                required
-              />
-              <input
-                type="email"
-                name="email"
-                placeholder="אימייל *"
-                value={formData.email}
-                onChange={onChange}
-                style={styles.popupInput}
-                required
-              />
+            <form 
+              // 2. תיקון: קוראים ל-onSubmit שהגיע מה-Props, ולא ל-submitLead
+              onSubmit={(e) => { e.preventDefault(); onSubmit(); }} 
+              noValidate 
+            >
+              {/* שדה שם */}
+              <div style={{ marginBottom: '10px' }}>
+                <input
+                  type="text"
+                  name="name"
+                  placeholder="שם מלא *"
+                  value={formData.name}
+                  onChange={onChange}
+                  style={{
+                    ...styles.popupInput,
+                    borderColor: errors?.name ? 'red' : 'rgba(255, 255, 255, 0.1)' // מסגרת אדומה אם יש שגיאה
+                  }}
+                />
+                {/* 3. הצגת הודעת השגיאה */}
+                {errors?.name && <span style={{ color: '#ff6b6b', fontSize: '12px', display: 'block', marginTop: '4px' }}>{errors.name}</span>}
+              </div>
+
+              {/* שדה טלפון */}
+              <div style={{ marginBottom: '10px' }}>
+                <input
+                  type="tel"
+                  name="phone"
+                  placeholder="טלפון *"
+                  value={formData.phone}
+                  onChange={onChange}
+                  style={{
+                    ...styles.popupInput,
+                    borderColor: errors?.phone ? 'red' : 'rgba(255, 255, 255, 0.1)'
+                  }}
+                />
+                {errors?.phone && <span style={{ color: '#ff6b6b', fontSize: '12px', display: 'block', marginTop: '4px' }}>{errors.phone}</span>}
+              </div>
+
+              {/* שדה אימייל */}
+              <div style={{ marginBottom: '10px' }}>
+                <input
+                  type="email"
+                  name="email"
+                  placeholder="אימייל *"
+                  value={formData.email}
+                  onChange={onChange}
+                  style={{
+                    ...styles.popupInput,
+                    borderColor: errors?.email ? 'red' : 'rgba(255, 255, 255, 0.1)'
+                  }}
+                />
+                {errors?.email && <span style={{ color: '#ff6b6b', fontSize: '12px', display: 'block', marginTop: '4px' }}>{errors.email}</span>}
+              </div>
+
               <textarea
                 name="message"
                 placeholder="הודעה (אופציונלי)"
@@ -74,6 +101,7 @@ export function LeadPopup({
                 onChange={onChange}
                 style={styles.popupTextarea}
               />
+              
               <button type="submit" style={styles.popupSubmitButton} disabled={isSubmitting}>
                 {isSubmitting ? "שולח..." : "שלח פרטים"}
               </button>

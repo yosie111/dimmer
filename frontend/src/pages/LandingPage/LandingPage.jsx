@@ -20,7 +20,7 @@ export default function LandingPage() {
     thresholdPercent: 40,
   });
 
-  const { formData, isSubmitting, isSubmitted, handleChange, submitLead, clearSubmitted } =
+  const { formData, errors, isSubmitting, isSubmitted, handleChange, submitLead, clearSubmitted } =
     useLeadForm();
 
   useEffect(() => setIsVisible(true), []);
@@ -36,17 +36,19 @@ export default function LandingPage() {
     openPopup();
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  // --- התיקון נמצא כאן ---
+  const handleFormSubmit = async () => {
+    // 1. מחקנו את ה-e ואת e.preventDefault() מכאן כי ה-Popup כבר עשה את זה
     const ok = await submitLead({ selectedProduct });
 
     if (ok) {
       setTimeout(() => {
-        closePopup();
-        setSelectedProduct(null);
+        // 2. שימוש בפונקציית הסגירה הקיימת כדי לנקות הכל מסודר
+        handleClosePopup(); 
       }, 3000);
     }
   };
+  // -----------------------
 
   return (
     <>
@@ -84,7 +86,8 @@ export default function LandingPage() {
           isSubmitting={isSubmitting}
           formData={formData}
           onChange={handleChange}
-          onSubmit={handleSubmit}
+          onSubmit={handleFormSubmit} // מעבירים את הפונקציה המתוקנת
+          errors={errors}
         />
 
         {/* Floating CTA */}
