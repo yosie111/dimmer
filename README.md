@@ -1,102 +1,103 @@
-# Dimmer - Lead Generation & Product Management System
+# Dimmer – Lead Generation & Product Management System
 
-A full-stack MERN application for managing dimmer switch products and capturing leads.
+A full-stack **MERN** application for managing smart dimmer switch products and capturing customer leads.  
+Designed with a clean admin experience, a robust REST API, and production-ready deployment on Render.
 
-## Features
+---
 
-- 🏠 Landing page with lead capture form
-- 📦 Product management with image upload
-- ☁️ Cloudinary integration for images
-- 🔍 Filtering and search capabilities
-- 📱 Responsive design (RTL Hebrew support)
+## ✨ Features
 
-## Tech Stack
+- 🌐 Public landing page with lead capture form  
+- 🧑‍💼 Admin dashboard for lead management  
+- 📦 Product management with image upload (Cloudinary)  
+- 🔍 Filtering, search, sorting, and date range queries  
+- 📊 Lead statistics and conversion insights  
+- 📱 Responsive design with RTL (Hebrew) support  
+- ☁️ Deployed to Render (frontend & backend)
 
-- **Frontend:** React, React Router
-- **Backend:** Node.js, Express
-- **Database:** MongoDB
-- **Images:** Cloudinary
-- **Testing:** Jest, React Testing Library
+---
 
-## Project Structure
+## 🛠 Tech Stack
 
-dimmer
-├── frontend
-│   ├── public
-│   ├── src
-│   │   ├── components
-│   │   │   ├── Dashboard.jsx
-│   │   │   ├── LeadsManager.jsx
-│   │   │   └── ProductManager.jsx
-│   │   ├── pages
-│   │   │   └── LandingPage
-│   │   │       ├── components
-│   │   │       ├── hooks
-│   │   │       ├── LandingPage.jsx
-│   │   │       └── index.js
-│   │   ├── App.jsx
-│   │   └── main.jsx
-│   ├── package.json
-│   └── vite.config.js
-├── server
-│   ├── config
-│   │   ├── cloudinary.js
-│   │   └── db.js
-│   ├── models
+### Frontend
+- React 18
+- React Router
+- RTL-friendly responsive UI
+
+### Backend
+- Node.js
+- Express.js
+- MongoDB (Mongoose)
+
+### Infrastructure & Tools
+- Cloudinary (image storage)
+- Render (deployment)
+- Jest & React Testing Library
+
+---
+
+## 📁 Project Structure
+
+```
+dimmer/
+├── frontend/
+│   ├── public/
+│   └── src/
+│       ├── components/
+│       │   ├── Dashboard.jsx
+│       │   ├── LeadsManager.jsx
+│       │   └── ProductManager.jsx
+│       ├── pages/
+│       │   └── LandingPage/
+│       │       ├── components/
+│       │       └── hooks/
+│       ├── App.jsx
+│       └── main.jsx
+│
+├── server/
+│   ├── config/
+│   │   ├── db.js
+│   │   └── cloudinary.js
+│   ├── models/
 │   │   ├── Lead.js
 │   │   └── Product.js
-│   ├── tests
-│   ├── server.js
-│   └── package.json
+│   ├── tests/
+│   └── server.js
+│
+├── package.json
 └── README.md
-
-
-## Installation
-
-### Prerequisites
-- Node.js (v18+)
-- MongoDB
-- Cloudinary account
-
-### Backend Setup
-```bash
-cd server
-npm install
 ```
 
-Create `.env` file:
-```env
-PORT=5000
-MONGODB_URI=mongodb://localhost:27017/dimmer_db
-CLOUDINARY_CLOUD_NAME=your_cloud_name
-CLOUDINARY_API_KEY=your_api_key
-CLOUDINARY_API_SECRET=your_api_secret
-NODE_ENV=development
-```
+---
 
-Seed database (optional):
-```bash
-npm run seed
-```
+## 🚀 Live URLs
 
-Start server:
-```bash
-npm run dev
-```
+### Frontend
+| URL | Description |
+|-----|-------------|
+| https://dimmer-frontend.onrender.com/ | Landing page |
+| https://dimmer-frontend.onrender.com/admin | Product management |
+| https://dimmer-frontend.onrender.com/dashboard | Leads dashboard |
+| https://dimmer-frontend.onrender.com/leads | Leads management |
 
-### Frontend Setup
-```bash
-cd frontend
-npm install
-npm start
-```
+### Backend
+| URL | Description |
+|-----|-------------|
+| https://dimmer.onrender.com/api/health | API health check |
 
-## API Endpoints
+---
+
+## 🔌 API Endpoints
+
+### Root
+| Method | Endpoint | Description |
+|------|---------|-------------|
+| GET | `/` | Get all leads and all products |
 
 ### Leads
 | Method | Endpoint | Description |
-|--------|----------|-------------|
-| POST | `/api/leads` | Create lead |
+|------|---------|-------------|
+| POST | `/api/leads` | Create new lead |
 | GET | `/api/leads` | Get all leads |
 | GET | `/api/leads/:id` | Get single lead |
 | PATCH | `/api/leads/:id` | Update lead |
@@ -104,37 +105,47 @@ npm start
 
 ### Products
 | Method | Endpoint | Description |
-|--------|----------|-------------|
+|------|---------|-------------|
 | GET | `/api/products` | Get all products |
 | GET | `/api/products/:id` | Get single product |
-| POST | `/api/products` | Create product (with image) |
+| POST | `/api/products` | Create product |
+| POST | `/api/products/bulk` | Bulk create products |
 | PATCH | `/api/products/:id` | Update product |
 | DELETE | `/api/products/:id` | Delete product |
-| POST | `/api/products/:id/image` | Upload image |
-| DELETE | `/api/products/:id/image` | Delete image |
 
-### Query Parameters
-- Products: `?model=mark1&color=white&positions=2&inStock=true`
-- Leads: `?status=new&source=website`
+### Product Images
+| Method | Endpoint | Description |
+|------|---------|-------------|
+| POST | `/api/products/:id/image` | Upload product image |
+| DELETE | `/api/products/:id/image` | Delete product image |
 
-## URLs
+---
 
-| URL | Description |
-|-----|-------------|
-| `http://localhost:3000/` | Landing page |
-| `http://localhost:3000/admin` | Product management |
-| `http://localhost:5000/api/health` | API health check |
+## ⚙️ Installation
 
-## Environment Variables
+### Backend
+```bash
+cd server
+npm install
+npm run dev
+```
 
-| Variable | Description |
-|----------|-------------|
-| `PORT` | Server port (default: 5000) |
-| `MONGODB_URI` | MongoDB connection string |
-| `CLOUDINARY_CLOUD_NAME` | Cloudinary cloud name |
-| `CLOUDINARY_API_KEY` | Cloudinary API key |
-| `CLOUDINARY_API_SECRET` | Cloudinary API secret |
+### Frontend
+```bash
+cd frontend
+npm install
+npm start
+```
 
-## License
+---
 
+## 🔒 Security Notes
+
+- Environment variables are not committed
+- Passwords are hashed (bcrypt)
+- Secrets stored securely
+
+---
+
+## 📄 License
 ISC
