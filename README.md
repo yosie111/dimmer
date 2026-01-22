@@ -66,8 +66,7 @@ npm install
 
 Create `.env` file:
 ```env
-PORT=5000
-MONGODB_URI=mongodb://localhost:27017/dimmer_db
+MONGODB_URI=mongodb+srv://USERNAME:PASSWORD@cluster.mongodb.net/dbname
 CLOUDINARY_CLOUD_NAME=your_cloud_name
 CLOUDINARY_API_KEY=your_api_key
 CLOUDINARY_API_SECRET=your_api_secret
@@ -93,25 +92,37 @@ npm start
 
 ## API Endpoints
 
-### Leads
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| POST | `/api/leads` | Create lead |
-| GET | `/api/leads` | Get all leads |
-| GET | `/api/leads/:id` | Get single lead |
-| PATCH | `/api/leads/:id` | Update lead |
-| DELETE | `/api/leads/:id` | Delete lead |
-
-### Products
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET | `/api/products` | Get all products |
-| GET | `/api/products/:id` | Get single product |
-| POST | `/api/products` | Create product (with image) |
-| PATCH | `/api/products/:id` | Update product |
-| DELETE | `/api/products/:id` | Delete product |
-| POST | `/api/products/:id/image` | Upload image |
-| DELETE | `/api/products/:id/image` | Delete image |
+╔════════════════════════════════════════════════════════════╗
+║                                                            ║
+                                                                                                                ║   🚀 השרת פועל על פורט ${PORT}                              ║
+║   📦 MongoDB מחובר                                        ║
+║   ☁️  Cloudinary מוגדר                                      ║
+║                                                            ║
+║   Root Endpoint:                                          ║
+║   GET    /                        - כל הלידים וכל המוצרים   ║
+║                                                            ║
+║   Leads Endpoints:                                         ║
+║   POST   /api/leads              - הוספת ליד               ║
+║   GET    /api/leads              - כל הלידים (נוסף: Date)  ║
+║   GET    /api/leads/:id          - ליד בודד                ║
+║   PATCH  /api/leads/:id          - עדכון ליד               ║
+║   DELETE /api/leads/:id          - מחיקת ליד               ║
+║                                                            ║
+║   Products Endpoints:                                      ║
+║   GET    /api/products           - כל המוצרים              ║
+║   GET    /api/products/:id       - מוצר בודד               ║
+║   POST   /api/products           - הוספת מוצר (עם תמונה)   ║
+║   POST   /api/products/bulk      - הוספת רשימת מוצרים      ║
+║   PATCH  /api/products/:id       - עדכון מוצר (עם תמונה)   ║
+║   DELETE /api/products/:id       - מחיקת מוצר              ║
+║                                                            ║
+║   Image Endpoints:                                         ║
+║   POST   /api/products/:id/image - העלאת תמונה למוצר       ║
+║   DELETE /api/products/:id/image - מחיקת תמונה ממוצר       ║
+║                                                            ║
+║   GET    /api/health             - בדיקת תקינות            ║
+║                                                            ║
+╚════════════════════════════════════════════════════════════╝
 
 ### Query Parameters
 - Products: `?model=mark1&color=white&positions=2&inStock=true`
@@ -121,15 +132,19 @@ npm start
 
 | URL | Description |
 |-----|-------------|
-| `http://localhost:3000/` | Landing page |
-| `http://localhost:3000/admin` | Product management |
-| `http://localhost:5000/api/health` | API health check |
+frontend
+| https://dimmer-frontend.onrender.com/ | Landing page |
+| https://dimmer-frontend.onrender.com/admin | Product management |
+| https://dimmer-frontend.onrender.com/dashboard | Leads dashboard |
+| https://dimmer-frontend.onrender.com/leads | Leads management |
+server
+| https://dimmer.onrender.com/api/health | API health check |
 
 ## Environment Variables
 
 | Variable | Description |
 |----------|-------------|
-| `PORT` | Server port (default: 5000) |
+| `PORT` | Server port https://dimmer.onrender.com  (default: 5000) |
 | `MONGODB_URI` | MongoDB connection string |
 | `CLOUDINARY_CLOUD_NAME` | Cloudinary cloud name |
 | `CLOUDINARY_API_KEY` | Cloudinary API key |
