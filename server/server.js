@@ -337,6 +337,40 @@ app.get('/api/leads-statuses', (req, res) => {
   });
 });
 
+// ==================== ROOT: All Leads + Products ====================
+// GET https://dimmer.onrender.com
+app.get('/', async (req, res) => {
+  console.log('All Leads + Products')
+  try {
+    const [leads, products] = await Promise.all([
+      Lead.find().sort({ createdAt: -1 }),
+      Product.find().sort({ price: 1 })
+    ]);
+
+    res.json({
+      success: true,
+      message: 'All leads and products',
+      data: {
+        leads: {
+          total: leads.length,
+          items: leads
+        },
+        products: {
+          total: products.length,
+          items: products
+        }
+      }
+    });
+  } catch (error) {
+    console.error('❌ ROOT GET error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'אירעה שגיאה בשרת'
+    });
+  }
+});
+
+
 // ==================== Products Routes ====================
 
 // שליפת כל המוצרים
