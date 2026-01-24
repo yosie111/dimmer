@@ -1,7 +1,12 @@
 import React, { useState, useEffect, useCallback } from 'react';
-const API_URL = process.env.REACT_APP_API_URL || '';
+const API_URL = process.env.REACT_APP_API_URL;
+
+if (!API_URL) {
+  throw new Error('REACT_APP_API_URL is not defined');
+}
 
 const LeadsManager = () => {
+
   // State
   const [leads, setLeads] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -27,7 +32,7 @@ const LeadsManager = () => {
   // Edit Modal
   const [editingLead, setEditingLead] = useState(null);
   const [showModal, setShowModal] = useState(false);
-  const API_URL = process.env.REACT_APP_API_URL || '';
+    console.log('API_URL:= ',API_URL)
 
 
   // סטטוסים

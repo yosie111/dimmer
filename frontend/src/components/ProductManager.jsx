@@ -1,6 +1,11 @@
 import React, { useState, useEffect } from 'react';
 
-const API_URL = process.env.REACT_APP_API_URL || '';
+const API_URL = process.env.REACT_APP_API_URL;
+
+if (!API_URL) {
+  throw new Error('REACT_APP_API_URL is not defined');
+}
+
 
 const ProductManager = () => {
   const [products, setProducts] = useState([]);
@@ -32,6 +37,8 @@ const ProductManager = () => {
       if (filter.inStock) params.append('inStock', filter.inStock);
 
       const response = await fetch(`${API_URL}/api/products?${params}`);
+      console.log('API_URL:= ',API_URL)
+
       const data = await response.json();
       if (data.success) {
         setProducts(data.data);
