@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 const API_URL = process.env.REACT_APP_API_URL;
 
 if (!API_URL) {
+  console.log('ProductManager: REACT_APP_API_URL is not defined')
   throw new Error('REACT_APP_API_URL is not defined');
 }
 

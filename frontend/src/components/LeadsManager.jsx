@@ -2,8 +2,10 @@ import React, { useState, useEffect, useCallback } from 'react';
 const API_URL = process.env.REACT_APP_API_URL;
 
 if (!API_URL) {
+  console.log('LeadsManager: REACT_APP_API_URL is not defined')
   throw new Error('REACT_APP_API_URL is not defined');
 }
+
 
 const LeadsManager = () => {
 

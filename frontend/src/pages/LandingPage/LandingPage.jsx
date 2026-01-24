@@ -9,6 +9,14 @@ import { ProductShowcase } from "./components/ProductShowcase";
 import { LeadPopup } from "./components/LeadPopup";
 import { FloatingCta } from "./components/FloatingCta";
 
+const API_URL = process.env.REACT_APP_API_URL;
+console.log('API_URL:= ',API_URL)
+
+if (!API_URL) {
+  console.log('LandingPage: REACT_APP_API_URL is not defined')
+  throw new Error('REACT_APP_API_URL is not defined');
+}
+
 export default function LandingPage() {
   const [isVisible, setIsVisible] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);

@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 const API_URL = process.env.REACT_APP_API_URL;
+  console.log('API_URL:= ',API_URL)
 
 if (!API_URL) {
+  console.log('Dashboard: REACT_APP_API_URL is not defined')
   throw new Error('REACT_APP_API_URL is not defined');
 }
 const Dashboard = () => {
