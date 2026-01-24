@@ -1,0 +1,10 @@
+{
+  "files": {
+    "main.js": "/dimmer/static/js/main.6a4329dd.js",
+    "index.html": "/dimmer/index.html",
+    "main.6a4329dd.js.map": "/dimmer/static/js/main.6a4329dd.js.map"
+  },
+  "entrypoints": [
+    "static/js/main.6a4329dd.js"
+  ]
+}
