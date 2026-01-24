@@ -15,7 +15,7 @@ const Navigation = () => {
         <div style={navStyles.links}>
           <Link to="/" style={navStyles.link}>דף הבית</Link>
           <Link to="/dashboard" style={navStyles.link}>דשבורד</Link>
-          <Link to="/leads" style={navStyles.link}>ניהול לידים</Link>
+          <Link to="/leads" style={navStyles.link}>ניהול לקוחות</Link>
           <Link to="/admin" style={navStyles.link}>ניהול מוצרים</Link>
         </div>
       </div>
